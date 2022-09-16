@@ -50,7 +50,7 @@ const Home = () => {
    * - Generating initial data for form input base on graph object
    */
   const generateInitialSelectedData = () => {
-    let obj = { _id: data?.data?.length + 1}
+    let obj = { _id: (data?.data?.length + 1).toString()}
     formType.forEach(v => {
       const key = v.name
       //@ts-ignore
