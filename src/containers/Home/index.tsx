@@ -21,6 +21,9 @@ const Home = () => {
     const data = getData()
     setData(data)
 
+    /**
+     * - extract the graph data to formType state to be used as form input structure
+     */
     let formType: Record<string, any>[] = []
     Object.keys(data?.graph?.elements).forEach(v => {
       //@ts-ignore
@@ -30,6 +33,11 @@ const Home = () => {
     setFormType(formType)
   }, [])
 
+  /**
+   * - Take care open side card component when user click button input +
+   * - Prepare the initial input form data
+   * - Tell the SideCard component that the component should be as creation mode
+   */
   const handleNewInputData = () => {
     setOpen(!open)
     setSideCardType('create')
@@ -37,6 +45,9 @@ const Home = () => {
     setSelectedData(initialSelectedData)
   }
 
+  /**
+   * - Generating initial data for form input base on graph object
+   */
   const generateInitialSelectedData = () => {
     let obj = { _id: data?.data?.length + 1}
     formType.forEach(v => {
@@ -47,17 +58,30 @@ const Home = () => {
     return obj
   }
 
+  /**
+   * 
+   * - Handle selected data from table and set as form input data
+   * - Tell the SideCard component that the component should be as creation mode
+   */
   const handleSelectedData = (data: Record<string, any>) => {
     setOpen(!open)
     setSelectedData(data)
     setSideCardType('edit')
   }
 
+  /**
+   * - Close the SideCard component
+   * - Clear input form data
+   */
   const handleCloseSideCard = () => {
     setOpen(!open)
     clearSelectedData()
   }
 
+  /**
+   * 
+   * - Listen for form input change
+   */
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
     if (e.target.name === 'createdAt') value = `${value}${new Date().toISOString().substring(10)}`
@@ -67,6 +91,9 @@ const Home = () => {
     })
   }
 
+  /**
+   * - Submit both creation and edit 
+   */
   const handleSubmit = () => {
     postData(selectedData)
     const nextData = produce(data, draft => {
@@ -83,6 +110,9 @@ const Home = () => {
     setSideCardType('')
   }
 
+  /**
+   * - Clear the input form data
+   */
   const clearSelectedData = () => {
     setSelectedData({})
   }
