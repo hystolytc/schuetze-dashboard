@@ -99,7 +99,6 @@ const Home = () => {
    */
   const handleSubmit = () => {
     if (formValidation()) return
-    postData(selectedData)
     const nextData = produce(data, draft => {
       if (sideCardType === 'create') {
         draft.data.push(selectedData) 
@@ -108,6 +107,7 @@ const Home = () => {
       const index = draft.data.findIndex((v: Record<string, any>) => v._id === selectedData._id)
       draft.data[index] = selectedData
     })
+    postData(nextData)
     setData(nextData)
     clearSelectedData()
     setOpen(!open)
