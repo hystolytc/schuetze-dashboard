@@ -16,6 +16,7 @@ const Home = () => {
   const [open, setOpen] = useState(false)
   const [formType, setFormType] = useState<Record<string, any>[]>([])
   const [sideCardType, setSideCardType] = useState('')
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const data = getData()
@@ -84,7 +85,9 @@ const Home = () => {
    */
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
-    if (e.target.name === 'createdAt') value = `${value}${new Date().toISOString().substring(10)}`
+    if (e.target.name === 'createdAt' && value !== '') {
+      value = `${value}${new Date().toISOString().substring(10)}`
+    }
     setSelectedData({
       ...selectedData, 
       [e.target.name]: value
@@ -95,6 +98,7 @@ const Home = () => {
    * - Submit both creation and edit 
    */
   const handleSubmit = () => {
+    if (formValidation()) return
     postData(selectedData)
     const nextData = produce(data, draft => {
       if (sideCardType === 'create') {
@@ -108,6 +112,22 @@ const Home = () => {
     clearSelectedData()
     setOpen(!open)
     setSideCardType('')
+    setError('')
+  }
+
+  /**
+   * - Validate all input data
+   */
+  const formValidation = (): boolean => {
+    let isError: boolean = false
+    Object.keys(selectedData).forEach(v => {
+      if (!selectedData[v]) {
+        isError = true
+        setError('All the input required to filled')
+        return
+      }
+    })
+    return isError
   }
 
   /**
@@ -184,6 +204,10 @@ const Home = () => {
                 {sideCardType === 'create' ? 'Create' : 'Edit'}
               </button>
             </div>
+            
+            {error !== '' &&
+              <p className='mt-5 text-sm text-red-500 text-center'>{error}</p>
+            }
           </form>
         </SideCard>
       </main>
